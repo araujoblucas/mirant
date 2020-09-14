@@ -24,14 +24,13 @@ export default function Register(){
 
     async function register_post(register3) {
 
-        const response = await api.post('/auth/register',
+        const response = await api.post('/auth/register', register3,
         {
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'multipart/form-data'
-                
+                'Content-Type': 'multipart/form-data'                
             }
-        }, register3);
+        } ).catch(error => {console.log(error)});
 
         console.log(response)
     }
@@ -40,33 +39,21 @@ export default function Register(){
     function navigateToDashboard() {
         let old_data = route.params.register2;
         let cep = '00000000';
-        const register3 = {
-            name: old_data.name,
-            email: old_data.email,
-            cpf:old_data.cpf,
-            phone:old_data.phone,
-            address:old_data.address,
-            profile: { uri: old_data.image.uri, },
-            password: password,
-            password_confirmation: confirm_password,
-            cep
-        }
-        let formData = new FormData();
-        formData.append('name', old_data.name);
-        formData.append('email', old_data.email);
-        formData.append('cpf', old_data.cpf); 
-        formData.append('phone', old_data.phone);
-        formData.append('address', old_data.address);
-        formData.append('profile', { uri: old_data.image.uri, name: 'image.jpg', type: old_data.image.type});old_data.image
-        formData.append('password', password);
-        formData.append('password_confirmation', confirm_password);
-        formData.append('cep', cep);
+        const register3 = new FormData();
+        register3.append('name', old_data.name)
+        register3.append('email', 'abracadabra@gmail.com')
+        register3.append('cpf', '55555111113')
+        register3.append('phone',old_data.phone)
+        register3.append('address',old_data.address)
+        register3.append('password', password)
+        register3.append('password_confirmation', confirm_password)
+        register3.append('cep', '000000')
 
+        
 
+        register_post(register3);
 
-        register_post(formData);
-
-        console.log(formData)
+        console.log(register3)
         //navigation.navigate('Dashboard');
     }
 
