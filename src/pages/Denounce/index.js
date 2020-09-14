@@ -1,17 +1,17 @@
 
 import React, {useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, SafeAreaView } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, TextInput, SafeAreaView } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Feather} from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { AsyncStorage } from 'react-native';
+
 
 import api from '../../services/api';
 
 import {Picker} from '@react-native-community/picker';
 
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
-import * as Permissions from 'expo-permissions';
 
 import styles from './styles';
 import Header from '../../Components/Header';
@@ -22,7 +22,6 @@ export default function Denounce(){
     let route = useRoute();
     
     const [ category, setCategory] = useState('Tipo de Denúncia')
-    const [ categories, setCategories] = useState([])
     const [ local, setLocal] = useState('')
     const [ desc, setDesc] = useState('')
     const [loading, setLoading] = useState(false);
@@ -39,31 +38,44 @@ export default function Denounce(){
         console.log(pickerResult);
     }
 
+    async function getToken() {
+        const token = AsyncStorage.getItem('@myToken', (err, result) => {
+            console.log(result);
+        })
+        if(token == null) {
+            navigation.navigate('Login');
+        }      
+    }
+
+    async function send() {
+        const data = new FormData();
+        data.append('description', desc)
+        data.append('location', '-31.776, -52.3594')
+        data.append('anonymous', '1')
+        data.append('category_id', category)
+
+        navigation.navigate('Dashboard')
+
+        
+        
+        const response = await api.post('report', data,{ 
+            headers: { 
+                'Authorization': `Bearer ${token}`
+            } }) ;
+        console.log(response.data)
+        navigation.navigate('Dashboard')
+    }
 
     function consolelist () {
         console.log(category);
     }
 
-    async function loadCategories() {
-
-        setLoading(true);
-        const response = await api.get('category',{
-            headers: {
-                Accept: 'application/json'
-            }
-        });
-        setCategories(response['data'])
-
-
-        console.log(categories)
-    }
 
     useEffect(()=> {
-        loadCategories();
     }, []);
 
     return (
-        
+        <ScrollView style={styles.containerScroll}>
         <View
           style={styles.container}
           >
@@ -91,11 +103,6 @@ export default function Denounce(){
             </Picker>  
         </View>
 
-
-
-
-
-
         <TouchableOpacity onPress={openImagePickerAsync} style={styles.containerInputImage}>
             <View style={styles.containerInternalInputImage}>
                 <Text style={styles.InputImageText}>Enviar Imagem</Text>
@@ -109,6 +116,9 @@ export default function Denounce(){
                 placeholder="Local"
                 onChangeText={text => setLocal(text)}
                 value={local}
+                enabled={false}
+                
+
             />
             <Text style={styles.InputIcon}>
                 <Feather name="map-pin" size={28} color="#90A4AE" />             
@@ -121,11 +131,12 @@ export default function Denounce(){
                 placeholder="Descrição"
                 onChangeText={text => setDesc(text)}
                 value={desc}
-                numberOfLines={5}
+                numberOfLines={20}
+                contextMenuHidden={true}
             />
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => send()}>
                 <View style={styles.Button}>
                 <Text style={styles.ButtonText}>
                         Enviar
@@ -136,7 +147,7 @@ export default function Denounce(){
                 </View>
         </TouchableOpacity>
     </View>
-        
+    </ScrollView>       
                     
     );
 }

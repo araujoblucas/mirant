@@ -7,15 +7,15 @@ export default StyleSheet.create({
     container: {
         flex:1,
         paddingTop: Constants.statusBarHeight,
-        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     buttonBack: {
         marginTop: -45,
         marginLeft: -300
     },
     logoImg: {
+        marginTop: Constants.statusBarHeight + 20,
         width: 150,
         height: 50,
         resizeMode: 'stretch',
@@ -29,7 +29,7 @@ export default StyleSheet.create({
         fontSize: 28,
     },
     containerInput:{
-        width: '90%',
+        width: 350,
         height: 80,
         marginTop: 10,
         backgroundColor: '#ECEFF1',

@@ -5,7 +5,10 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { Feather} from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AsyncStorage } from 'react-native';
 
+
+import api from '../../services/api';
 
 import styles from './styles';
 import logoImg from '../../assets/Mirant.png';
@@ -14,12 +17,24 @@ import logoImg from '../../assets/Mirant.png';
 export default function Login(){
     let navigation = useNavigation();
     let route = useRoute();
-    
-    let [password, setPassword] = useState('');
-    let [confirm_password, setConfirm_password] = useState('');
 
-    function navigateToDashboard() {
-        navigation.navigate('Dashboard');
+    let [password, setPassword] = useState('');
+    let [email, setEmail] = useState('');
+
+    async function navigateToDashboard() {
+
+        let data = {
+            'email': email,
+            'password': password
+        }
+        
+        const response = await api.post('auth/login', data);
+        
+        store_token(response.data.access_token);
+        console.log(response.status)
+        if(response.status == 200) {
+            navigation.navigate('Dashboard');
+        }
     }
 
     function navigateToRegister1() {
@@ -29,7 +44,18 @@ export default function Login(){
     function navigateGoBack() {
         navigation.goBack();
     }
-    
+
+    async function store_token(token){
+        try {
+          await AsyncStorage.setItem(
+            '@myToken',
+             token
+          );
+        } catch (error) {}
+      };
+
+
+
     return (
         <View style={styles.logoImg} style={styles.container}>
             <Image style={styles.logoImg} source={logoImg} />
@@ -42,12 +68,9 @@ export default function Login(){
                 <TextInput
                     style={styles.textInput}
                     placeholder="Digite Aqui"
-                    onChangeText={text => setPassword(text)}
-                    value={password}
+                    onChangeText={text => setEmail(text)}
+                    value={email}
                 />
-                <Text style={styles.InputIcon}>
-                    <FontAwesome name="lock" size={30} color="#90A4AE" />             
-                </Text>
             </View>
 
             
@@ -55,12 +78,11 @@ export default function Login(){
                 <TextInput
                     style={styles.textInput}
                     placeholder="Senha"
-                    onChangeText={text => setConfirm_password(text)}
-                    value={confirm_password}
+                    secureTextEntry={true}
+                    onChangeText={text => setPassword(text)}
+                    value={password}
                 />
-                <Text style={styles.InputIcon}>
-                        <FontAwesome name="lock" size={30} color="#90A4AE" />
-                </Text>
+
             </View>
 
 
@@ -86,7 +108,6 @@ export default function Login(){
                     </Text>
                 </View>
             </TouchableOpacity>
-        </View>
-            
+        </View>          
     );
 }
