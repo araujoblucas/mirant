@@ -14,7 +14,6 @@ import * as Permissions from 'expo-permissions';
 
 import styles from './styles';
 import logoImg from '../../assets/Mirant.png';
-import Pelotas from '../../assets/PelotasGray.png';
 import Contagem23 from '../../assets/Contagem2-3.png';
 
 

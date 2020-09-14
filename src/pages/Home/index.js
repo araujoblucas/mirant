@@ -9,7 +9,6 @@ import { Feather} from '@expo/vector-icons';
 import styles from './styles';
 import logoImg from '../../assets/Mirant.png';
 
-import { useFonts } from 'expo-font';
 
 
 export default function Home(){

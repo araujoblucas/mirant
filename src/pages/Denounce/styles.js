@@ -2,6 +2,10 @@ import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
 export default StyleSheet.create({
+    containerScroll: 
+    {
+        flex:1
+    },
     container: {
         flex:1,
         alignItems: 'center',
@@ -88,7 +92,7 @@ export default StyleSheet.create({
 
     containerInputMultiline:{
         width: 330,
-        height: 140,
+        height: 340,
         marginTop: 20,
         backgroundColor: '#ECEFF1',
         borderBottomColor: '#90A4AE',
@@ -112,6 +116,7 @@ export default StyleSheet.create({
         paddingRight: 140,
         borderRadius: 8,
         padding: 15,
+        marginBottom:20
     },
     ButtonText: {
         color:'#FFF',
